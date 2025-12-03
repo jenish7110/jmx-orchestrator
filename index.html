@@ -3,926 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JMX Orchestrator Pro</title>
+    <title>JMX Orchestrator </title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
-        .tab-active { border-bottom: 2px solid #000; font-weight: 600; }
-        .status-enabled { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-        .status-disabled { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-        .metric-card { padding: 1rem; border-radius: 0.5rem; border: 1px solid #e5e7eb; background-color: #f9fafb; }
-        .input-field { border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; }
-        .input-field:focus { outline: none; border-color: #000; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1); }
-        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; border-radius: 0.5rem; }
+        :root{--primary:#000;--primary-hover:#333;--success:#059669;--warning:#d97706;--error:#dc2626;--info:#2563eb;--surface:#fff;--surface-alt:#f9fafb}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto',sans-serif;background:linear-gradient(135deg,#f5f7fa 0%,#e4e7eb 100%)}.tab-active{border-bottom:2px solid var(--primary);font-weight:700;color:var(--primary)}.tab-disabled{color:#9ca3af!important;cursor:not-allowed!important;pointer-events:none!important}.status-enabled{background-color:#f0fdf4;color:#166534;border:1px solid #bbf7d0}.status-disabled{background-color:#fef2f2;color:#991b1b;border:1px solid #fecaca}.metric-card{padding:1.25rem;border-radius:0.75rem;border:1px solid #e5e7eb;background-color:var(--surface);box-shadow:0 1px 3px 0 rgba(0,0,0,0.05);transition:all 0.2s ease}.metric-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px 0 rgba(0,0,0,0.08)}.input-field{border:1px solid #d1d5db;border-radius:0.5rem;padding:0.75rem;transition:all 0.2s ease}.input-field:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,0,0,0.1)}.warning-box{background-color:#fef3c7;border-left:4px solid #f59e0b;padding:1.25rem;border-radius:0.75rem}.button-primary{background-color:var(--primary);color:white;border-radius:0.75rem;padding:0.75rem 1.5rem;font-weight:600;transition:all 0.2s ease;transform:translateY(0);box-shadow:0 2px 4px rgba(0,0,0,0.05)}.button-primary:hover{background-color:var(--primary-hover);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}.button-primary:disabled{background-color:#d1d5db;transform:none;box-shadow:none;cursor:not-allowed}.card{background-color:var(--surface);border-radius:0.75rem;border:1px solid #e5e7eb;box-shadow:0 1px 3px 0 rgba(0,0,0,0.05);transition:all 0.2s ease}.card:hover{box-shadow:0 4px 12px 0 rgba(0,0,0,0.08)}.card-header{border-bottom:1px solid #e5e7eb;padding:1.25rem 1.5rem}.table-row:nth-child(even){background-color:#fafafa}.table-row:hover{background-color:#f3f4f6}.tooltip{position:relative;display:inline-block}.tooltip .tooltip-text{visibility:hidden;width:200px;background-color:#1f2937;color:white;text-align:center;border-radius:6px;padding:8px;position:absolute;z-index:1;bottom:125%;left:50%;transform:translateX(-50%);opacity:0;transition:opacity 0.3s;font-size:0.75rem}.tooltip:hover .tooltip-text{visibility:visible;opacity:1}.progress-bar{width:100%;height:8px;background-color:#e5e7eb;border-radius:4px;overflow:hidden}.progress-fill{height:100%;background-color:var(--success);transition:width 0.3s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.fade-in{animation:fadeIn 0.3s ease forwards}.highlight-row{background-color:#fff3cd!important;transition:background-color 0.3s ease}.input-cell{border:1px solid #d1d5db;border-radius:0.25rem;padding:0.25rem 0.5rem;text-align:center;width:80px}.btn-calculate{padding:0.25rem 0.5rem;font-size:0.75rem;margin:0.125rem}.calculated-row{background-color:#fefce8!important}.applied-row{background-color:#f0fdf4!important}.change-indicator{font-size:0.7rem;padding:0.125rem 0.375rem;border-radius:0.25rem;margin-left:0.25rem}.change-up{background-color:#d1fae5;color:#065f46}.change-down{background-color:#fee2e2;color:#991b1b}.change-neutral{background-color:#f3f4f6;color:#374151}.mode-not-selected{background-color:#f3f4f6;color:#6b7280;border:1px solid #d1d5db}@media (max-width:768px){.metric-card{padding:1rem}.grid-cols-5{grid-template-columns:repeat(2,1fr)}.input-field{padding:0.75rem;min-height:44px}button{min-height:44px}.card{margin-bottom:1rem}}
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">JMX Orchestrator Pro</h1>
-                    <p class="text-sm text-gray-600">Unified JMeter 5.6.3 Controller </p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div id="modeIndicator" class="hidden px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-semibold">
-                        <span class="text-gray-400 mr-2">Mode:</span>
-                        <span id="currentMode">Iteration</span>
-                    </div>
-                    <span class="text-xs text-gray-500">v3.1.0</span>
-                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 py-6">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <div class="flex items-center justify-between gap-4">
-                <div class="flex-1">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Upload JMX File</label>
-                    <input type="file" id="fileInput" accept=".jmx" 
-                           class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:bg-black file:text-white hover:file:bg-gray-800">
-                </div>
-                <button id="downloadBtn" disabled onclick="downloadJMX()" 
-                        class=" mt-6 px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed">
-                    💾 Download
-                </button>
-            </div>
-        </div>
-
-        <div id="uploadPrompt" class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-            <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-            </svg>
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">Upload JMX File to Begin</h3>
-            <p class="text-gray-500">Select a JMeter test plan to view and edit thread groups</p>
-        </div>
-
-        <div id="mainContent" style="display: none;">
-            <div class="mb-6 border-b border-gray-200">
-                <nav class="flex gap-8">
-                    <button onclick="switchTab('master')" id="tab-master" class="pb-3 px-1 text-sm font-medium text-gray-700 hover:text-gray-900 tab-active">Master Control</button>
-                    <button onclick="switchTab('tps-calculator')" id="tab-tps-calculator" class="pb-3 px-1 text-sm font-medium text-gray-700 hover:text-gray-900">TPS Calculator</button>
-                    <button onclick="switchTab('execution')" id="tab-execution" class="pb-3 px-1 text-sm font-medium text-gray-700 hover:text-gray-900">Execution Modes</button>
-                    <button onclick="switchTab('threadgroups')" id="tab-threadgroups" class="pb-3 px-1 text-sm font-medium text-gray-700 hover:text-gray-900">Thread Groups</button>
-                    <button onclick="switchTab('variables')" id="tab-variables" class="pb-3 px-1 text-sm font-medium text-gray-700 hover:text-gray-900">Variables</button>
-                </nav>
-            </div>
-
-            <div id="content-master" class="tab-content">
-                <div class="bg-white rounded-lg shadow-sm border-2 border-black p-6 mb-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">🎯 Master Scenario Scaling</h3>
-                    <p class="text-sm text-gray-600 mb-4">Scale entire scenario - affects ALL thread groups and TPS</p>
-                    <div class="flex items-center gap-4">
-                        <div class="flex-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Scale Percentage</label>
-                            <input type="number" id="masterScale" value="100" min="1" max="1000" step="1" class="input-field w-32 text-center text-lg font-semibold">
-                        </div>
-                        <button onclick="applyMasterScale()" class="px-6 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors mt-6">Apply to All</button>
-                    </div>
-                    <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-gray-600">
-                        <div class="p-2 bg-gray-100 rounded">150% → ×1.5</div>
-                        <div class="p-2 bg-gray-100 rounded">200% → ×2</div>
-                        <div class="p-2 bg-gray-100 rounded">50% → ×0.5</div>
-                        <div class="p-2 bg-gray-100 rounded">75% → ×0.75</div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">🖥️ Slave/Node Scaling</h3>
-                    <div class="flex items-center gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Number of Slaves</label>
-                            <input type="number" id="slaves" value="1" min="1" class="input-field w-32 text-center" onchange="renderTable()">
-                        </div>
-                        <div class="text-sm text-gray-600">Each thread group multiplied by this number</div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">📊 Performance Summary</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                        <div class="metric-card">
-                            <div class="text-sm text-gray-600 mb-1">Active Groups</div>
-                            <div class="text-2xl font-bold" id="activeGroups">0</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="text-sm text-gray-600 mb-1">Original Users</div>
-                            <div class="text-2xl font-bold" id="originalUsers">0</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="text-sm text-gray-600 mb-1">Scaled Users</div>
-                            <div class="text-2xl font-bold text-green-600" id="scaledUsers">0</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="text-sm text-gray-600 mb-1">Original TPS</div>
-                            <div class="text-2xl font-bold" id="originalTPS">N/A</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="text-sm text-gray-600 mb-1">Scaled TPS</div>
-                            <div class="text-2xl font-bold text-green-600" id="scaledTPS">N/A</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="content-tps-calculator" class="tab-content" style="display: none;">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">🧮 TPS-to-Users Calculator</h3>
-                    <p class="text-sm text-gray-600 mb-4">Calculate required users to achieve target TPS</p>
-                    <div class="grid md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Target Total TPS</label>
-                            <input type="number" id="targetTPS" min="0.01" step="0.01" placeholder="Enter target TPS" class="input-field w-full">
-                            <p class="text-xs text-gray-500 mt-1">Desired transactions per second</p>
-                        </div>
-                        <div>
-                            <button onclick="calculateUsersFromTPS()" class="w-full px-6 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors mt-6">Calculate</button>
-                        </div>
-                    </div>
-                    <div id="tpsCalculationResult" style="display: none;" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <h4 class="font-semibold text-gray-900 mb-3">📊 Results</h4>
-                        <div id="tpsResultContent" class="space-y-2 text-sm"></div>
-                    </div>
-                    <div class="warning-box mt-6">
-                        <h4 class="font-semibold text-gray-900 mb-2">⚠️ Best Practices</h4>
-                        <ul class="text-sm text-gray-700 space-y-1 list-disc list-inside">
-                            <li>TPS per user = Total TPS / Total Users</li>
-                            <li>Minimum 1 user per thread group</li>
-                            <li>System rounds up to ensure targets</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">🎯 Individual TPS Adjustment</h3>
-                    <div id="individualTPSControls"></div>
-                </div>
-            </div>
-
-            <div id="content-execution" class="tab-content" style="display: none;">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">⚙️ Execution Mode</h3>
-                    <select id="executionMode" onchange="changeExecutionMode()" class="input-field w-full">
-                        <option value="iteration">Iteration-Based (Finite loops)</option>
-                        <option value="duration">Duration-Based (Infinite loops)</option>
-                        <option value="sanity">Sanity Mode (1 user, fixed ramp-up)</option>
-                    </select>
-                    <div class="mt-4 p-4 bg-gray-50 rounded-lg">
-                        <p class="text-sm text-gray-700" id="modeDescription">Tests run for specific iterations per user</p>
-                    </div>
-                </div>
-
-                <div id="sanityConfig" style="display: none;" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">🔍 Sanity Mode Config</h3>
-                    <div class="grid md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Users</label>
-                            <input type="number" id="sanityUsers" value="1" min="1" class="input-field w-full text-center" disabled>
-                            <p class="text-xs text-gray-500 mt-1">Fixed at 1</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Ramp-up (sec)</label>
-                            <input type="number" id="sanityRampup" value="1" min="1" class="input-field w-full text-center">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Iterations</label>
-                            <input type="number" id="sanityIterations" value="5" min="1" class="input-field w-full text-center">
-                        </div>
-                    </div>
-                    <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
-                        ⚠️ Disables PreciseThroughputTimer and sets fixed ramp-up values
-                    </div>
-                </div>
-
-                <div id="durationControls" style="display: none;">
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-                        <h3 class="text-lg font-bold text-gray-900 mb-4">⏱️ Duration Settings</h3>
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <h4 class="font-semibold text-gray-900 mb-3">Ramp-up</h4>
-                                <div class="flex items-center gap-2 mb-3">
-                                    <input type="number" id="usersPerInterval" value="1" min="1" class="input-field w-20 text-center">
-                                    <span class="text-sm">user(s) every</span>
-                                    <input type="number" id="intervalSeconds" value="1" min="1" class="input-field w-20 text-center">
-                                    <span class="text-sm">sec</span>
-                                </div>
-                                <div class="text-sm text-gray-600">
-                                    <div>Total Users: <span class="font-semibold" id="totalUsersDisplay">0</span></div>
-                                    <div>Est. ramp-up: <span class="font-semibold" id="estimatedRampup">0h 0m 0s</span></div>
-                                </div>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-900 mb-3">Duration</h4>
-                                <div class="flex items-center gap-2 mb-3">
-                                    <input type="number" id="durationHours" value="0" min="0" class="input-field w-16 text-center">
-                                    <span class="text-sm">h</span>
-                                    <input type="number" id="durationMinutes" value="0" min="0" max="59" class="input-field w-16 text-center">
-                                    <span class="text-sm">m</span>
-                                    <input type="number" id="durationSeconds" value="0" min="0" max="59" class="input-field w-16 text-center">
-                                    <span class="text-sm">s</span>
-                                </div>
-                                <div class="text-sm text-gray-600">Total: <span class="font-semibold" id="totalDuration">0 sec</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">🔧 Bulk Actions</h3>
-                    <div class="flex items-center gap-3">
-                        <button onclick="enableAllThreadGroups()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">✓ Enable All</button>
-                        <button onclick="disableAllThreadGroups()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">✕ Disable All</button>
-                        <div class="ml-auto text-sm text-gray-600">
-                            <span class="font-semibold text-green-600" id="enabledCount">0</span> enabled / 
-                            <span class="font-semibold text-red-600" id="disabledCount">0</span> disabled
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="content-threadgroups" class="tab-content" style="display: none;">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-bold text-gray-900">📋 Thread Groups</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50 border-b border-gray-200">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Status</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Name</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Users</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Scaled</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase" id="loopHeader">Loops</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">TPS/User</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Orig TPS</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Scaled TPS</th>
-                                </tr>
-                            </thead>
-                            <tbody id="threadGroupsTableBody" class="divide-y divide-gray-200"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="content-variables" class="tab-content" style="display: none;">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                        <h3 class="text-lg font-bold text-gray-900 mb-4">Ramp-up Time</h3>
-                        <div class="text-3xl font-bold text-gray-900 mb-2" id="rampupValue">N/A</div>
-                        <div class="text-sm text-gray-600" id="rampupHours">N/A</div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                        <h3 class="text-lg font-bold text-gray-900 mb-4">Steady State</h3>
-                        <div class="text-3xl font-bold text-gray-900 mb-2" id="steadyStateValue">N/A</div>
-                        <div class="text-sm text-gray-600" id="steadyStateHours">N/A</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <div id="toast" class="fixed bottom-4 right-4 bg-black text-white px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 translate-y-20 opacity-0" style="z-index: 1000;">
-        <span id="toastMessage"></span>
+<body class="min-h-screen">
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-white bg-opacity-80 z-50 flex items-center justify-center">
+        <div class="text-center fade-in"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div><p class="mt-4 text-gray-600 font-medium">Processing JMX file...</p></div>
     </div>
-
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4"><div class="flex items-center justify-between"><div><h1 class="text-2xl font-bold text-gray-900">JMX Orchestrator Pro</h1></div><div class="flex items-center gap-4"><div id="modeIndicator" class="hidden px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-semibold"><span class="text-gray-400 mr-2">Mode:</span><span id="currentMode">Not Selected</span></div><span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">v3.2.0</span><div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div></div></div></div>
+    </header>
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <div id="uploadPrompt" class="card p-12 text-center cursor-pointer border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+            <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-4"></i><h3 class="text-xl font-semibold text-gray-700 mb-2">Upload JMX File to Begin</h3><p class="text-gray-500 mb-4">Select a JMeter test plan to view and edit thread groups</p><button class="button-primary inline-flex items-center" onclick="document.getElementById('fileInput').click()"><i class="fas fa-file-upload mr-2"></i> Choose File</button>
+        </div>
+        <div id="fileManagementSection" style="display:none">
+            <div class="card p-6 mb-6"><div class="flex flex-col md:flex-row items-center justify-between gap-6"><div class="flex-1 w-full"><div class="flex items-center justify-between mb-4"><h3 class="text-lg font-semibold text-gray-900">Test Plan Management</h3><span class="text-xs text-gray-500 bg-blue-50 px-2 py-1 rounded">JMX Files</span></div><div class="flex flex-col md:flex-row gap-4"><div class="flex-1"><label class="block text-sm font-medium text-gray-700 mb-2"><i class="fas fa-upload mr-2 text-gray-500"></i>Upload JMX File</label><div class="relative"><input type="file" id="fileInput" accept=".jmx" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-3 file:px-4 file:rounded-l-lg file:border-0 file:bg-gray-800 file:text-white hover:file:bg-gray-700 transition-colors"><div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"><i class="fas fa-file-code text-gray-400"></i></div></div><p class="text-xs text-gray-500 mt-2">Select a JMeter test plan (.jmx) to begin configuration</p></div><div class="flex items-center"><button id="downloadBtn" onclick="downloadJMX()" class="button-primary flex items-center"><i class="fas fa-download mr-2"></i> Download JMX</button></div></div></div></div></div>
+            <div id="appContent">
+                <div class="card p-6 mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-cogs mr-2 text-blue-600"></i> First Step: Select Execution Mode<span class="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Required</span></h3>
+                    <select id="executionMode" onchange="changeExecutionMode()" class="input-field w-full bg-white border-2 border-blue-300"><option value="" selected disabled>-- Select Execution Mode --</option><option value="iteration">Iteration-Based (Finite loops)</option><option value="duration">Duration-Based (Infinite loops)</option><option value="sanity">Sanity Mode (1 user, fixed ramp-up)</option></select>
+                    <div class="mt-4 p-4 bg-white rounded-lg border border-blue-100"><p class="text-sm text-gray-700" id="modeDescription">Please select an execution mode to proceed</p><div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs"><div class="p-3 bg-blue-50 rounded-lg"><strong class="text-blue-700">Iteration Mode:</strong><p class="text-gray-600 mt-1">Tests run for specific iterations per user</p></div><div class="p-3 bg-green-50 rounded-lg"><strong class="text-green-700">Duration Mode:</strong><p class="text-gray-600 mt-1">TPS Calculator available - Tests run for specific duration</p></div><div class="p-3 bg-yellow-50 rounded-lg"><strong class="text-yellow-700">Sanity Mode:</strong><p class="text-gray-600 mt-1">Quick validation - 1 user, fixed ramp-up</p></div></div></div>
+                </div>
+                <div id="modeSpecificControls" style="display:none">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="card p-6"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-server mr-2 text-blue-500"></i> Slave/Node Scaling</h3><div class="space-y-4"><div><label class="block text-sm font-medium text-gray-700 mb-2">Number of Slaves<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Multiplies all thread groups for distributed testing</span></div></label><input type="number" id="slaves" value="1" min="1" class="input-field w-full text-center text-lg font-semibold" onchange="renderTable()"></div><div class="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg"><i class="fas fa-info-circle mr-1 text-blue-500"></i> Each thread group multiplied by this number</div></div></div>
+                        <div class="card p-6 md:col-span-2"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-chart-bar mr-2 text-green-500"></i> Performance Summary</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                            <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Active Groups<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Enabled thread groups / Total thread groups</span></div></div><div class="text-2xl font-bold" id="activeGroups">0</div></div>
+                            <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Current Users<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Base number of users (after TPS Calculator adjustments)</span></div></div><div class="text-2xl font-bold" id="originalUsers">0</div></div>
+                            <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Scaled Users (× slaves)<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Current users multiplied by number of slaves</span></div></div><div class="text-2xl font-bold text-green-600" id="scaledUsers">0</div></div>
+                            <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Current TPS<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Base TPS (after TPS Calculator adjustments)</span></div></div><div class="text-2xl font-bold" id="originalTPS">N/A</div></div>
+                            <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Scaled TPS (× slaves)<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Current TPS multiplied by number of slaves</span></div></div><div class="text-2xl font-bold text-green-600" id="scaledTPS">N/A</div></div>
+                        </div></div>
+                    </div>
+                    <div id="mainContent">
+                        <div class="mb-6 border-b border-gray-200"><nav class="flex gap-8 overflow-x-auto pb-2">
+                            <button onclick="switchTab('tps-calculator')" id="tab-tps-calculator" class="pb-3 px-1 text-sm font-medium text-gray-700 hover:text-gray-900 whitespace-nowrap tab-disabled"><i class="fas fa-calculator mr-2"></i> TPS Calculator<span class="ml-1 text-xs bg-gray-200 text-gray-600 px-1 rounded">Duration Only</span></button>
+                            <button onclick="switchTab('execution')" id="tab-execution" class="pb-3 px-1 text-sm font-medium text-gray-700 hover:text-gray-900 tab-active whitespace-nowrap"><i class="fas fa-cogs mr-2"></i> Execution Modes</button>
+                            <button onclick="switchTab('threadgroups')" id="tab-threadgroups" class="pb-3 px-1 text-sm font-medium text-gray-700 hover:text-gray-900 whitespace-nowrap"><i class="fas fa-layer-group mr-2"></i> Thread Groups</button>
+                            <button onclick="switchTab('variables')" id="tab-variables" class="pb-3 px-1 text-sm font-medium text-gray-700 hover:text-gray-900 whitespace-nowrap"><i class="fas fa-code mr-2"></i> Variables</button>
+                        </nav></div>
+                        <div id="content-tps-calculator" class="tab-content" style="display:none">
+                            <div id="tpsCalculatorDisabledMessage" class="card p-8 mb-6 text-center border-2 border-yellow-200 bg-yellow-50"><i class="fas fa-calculator text-4xl text-yellow-500 mb-4"></i><h3 class="text-xl font-bold text-gray-900 mb-2">TPS Calculator Available Only in Duration Mode</h3><p class="text-gray-600 mb-4" id="tpsDisabledMessage">Please select Duration Mode to use TPS Calculator. For Iteration/Sanity modes, go to Thread Groups section.</p></div>
+                            <div id="tpsCalculatorContent" style="display:none">
+                                <div class="card p-6 mb-6"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-calculator mr-2"></i> TPS Calculator Summary</h3><div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+                                    <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Total Threads<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Sum of current threads across all active groups</span></div></div><div class="text-2xl font-bold" id="totalThreads">0</div></div>
+                                    <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Total TPS<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Sum of current TPS across all active groups</span></div></div><div class="text-2xl font-bold" id="totalTPS">0.00</div></div>
+                                    <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Active Groups</div><div class="text-2xl font-bold" id="tpsActiveGroups">0</div></div>
+                                    <div class="metric-card"><div class="text-sm text-gray-600 mb-1">All Groups</div><div class="text-2xl font-bold" id="groupCount">0</div></div>
+                                    <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Avg Response Time<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Average response time across all active groups</span></div></div><div class="text-2xl font-bold" id="avgResponseTime">0.00s</div></div>
+                                    <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Pending Changes</div><div class="text-2xl font-bold text-yellow-600" id="calcCount">0</div></div>
+                                </div></div>
+                                <div class="card p-6 mb-6"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-bullseye mr-2"></i> Bulk TPS Adjustment</h3><p class="text-sm text-gray-600 mb-4">Adjust all thread groups to target total TPS</p><div class="grid md:grid-cols-4 gap-4 mb-6">
+                                    <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Target Total TPS<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Desired total transactions per second for all thread groups</span></div></label><input type="number" id="targetTPS" min="0.01" step="0.01" placeholder="Enter target TPS" class="input-field w-full"><p class="text-xs text-gray-500 mt-1">Desired total transactions per second</p></div>
+                                    <div class="flex items-center gap-2"><button onclick="calculateBulkTPS()" class="button-primary w-full mt-2"><i class="fas fa-calculator mr-2"></i> Calculate</button></div>
+                                    <div><button onclick="applyAllCalculations()" class="button-primary w-full mt-2 bg-green-600 hover:bg-green-700" id="applyAllBtn" disabled><i class="fas fa-check mr-2"></i> Apply All</button></div>
+                                </div>
+                                <div id="calculationResultsTable" class="mb-6" style="display:none">
+                                    <div class="flex items-center justify-between mb-4"><h4 class="font-semibold text-gray-900 flex items-center"><i class="fas fa-clipboard-list mr-2"></i> Calculated Changes<span class="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full" id="pendingCount">0</span></h4><div class="text-sm text-gray-600"><span id="appliedCount">0</span> applied / <span id="totalCalculations">0</span> total</div></div>
+                                    <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-gray-50 border-b border-gray-200"><tr>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">Thread Group</th>
+                                        <th class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase">Current</th>
+                                        <th class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase">Calculated</th>
+                                        <th class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase">Response Time</th>
+                                        <th class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase">Change</th>
+                                        <th class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase">Status</th></tr></thead>
+                                        <tbody id="bulkCalculationTableBody" class="divide-y divide-gray-200"></tbody></table></div>
+                                    <div class="mt-4 flex flex-wrap gap-2"><button onclick="applyAllCalculations()" class="button-primary bg-green-600 hover:bg-green-700 text-sm py-2 px-4"><i class="fas fa-check-double mr-2"></i> Apply All Changes</button><button onclick="clearCalculations()" class="button-primary bg-gray-600 hover:bg-gray-700 text-sm py-2 px-4"><i class="fas fa-times mr-2"></i> Clear</button></div></div>
+                                <div class="warning-box"><h4 class="font-semibold text-gray-900 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i> Calculation Method (Little's Law)</h4><ul class="text-sm text-gray-700 space-y-1 list-disc list-inside"><li><strong>Response Time = Current Threads ÷ Current TPS</strong></li><li><strong>Required Threads = Target TPS × Response Time</strong></li><li>System rounds up to ensure targets are met</li><li>Minimum 1 thread per thread group maintained</li></ul></div></div>
+                                <div class="card p-6"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-sliders-h mr-2"></i> Individual TPS Calculator</h3><div class="overflow-x-auto"><table class="w-full"><thead class="bg-gray-50 border-b border-gray-200 sticky top-0"><tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">#</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Thread Group</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Status</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Threads</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Current TPS</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Response Time</th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Target TPS<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">This will adjust the base TPS and required threads</span></div></th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Actions</th></tr></thead>
+                                    <tbody id="tpsCalculatorTable" class="divide-y divide-gray-200"></tbody></table></div></div>
+                                <div class="card p-6 mt-6"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-history mr-2"></i> Calculation Log</h3><div id="calculationLog" class="bg-gray-50 p-4 rounded-lg h-40 overflow-y-auto text-sm"><div class="text-gray-500 italic">No calculations yet...</div></div></div></div></div>
+                        <div id="content-execution" class="tab-content fade-in">
+                            <div class="card p-6 mb-6"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-cogs mr-2"></i> Execution Mode Settings</h3>
+                                <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200"><p class="text-sm text-gray-700"><strong>Current Mode:</strong> <span id="currentModeDisplay" class="font-bold text-blue-700">Not Selected</span></p><p class="text-xs text-gray-600 mt-1">You can change the mode below. Note: Changing modes will reset TPS calculations.</p></div>
+                                <select id="executionMode2" onchange="changeExecutionModeFromTab()" class="input-field w-full mb-4"><option value="" selected disabled>-- Select Execution Mode --</option><option value="iteration">Iteration-Based (Finite loops)</option><option value="duration">Duration-Based (Infinite loops)</option><option value="sanity">Sanity Mode (1 user, fixed ramp-up)</option></select>
+                                <div class="mt-4 p-4 bg-gray-50 rounded-lg"><p class="text-sm text-gray-700" id="modeDescription2">Select a mode to see description</p></div></div>
+                            <div id="sanityConfig" style="display:none" class="card p-6 mb-6"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-search mr-2"></i> Sanity Mode Config</h3><div class="grid md:grid-cols-3 gap-4">
+                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Users</label><input type="number" id="sanityUsers" value="1" min="1" class="input-field w-full text-center" disabled><p class="text-xs text-gray-500 mt-1">Fixed at 1</p></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Ramp-up (sec)</label><input type="number" id="sanityRampup" value="1" min="1" class="input-field w-full text-center"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Iterations</label><input type="number" id="sanityIterations" value="5" min="1" class="input-field w-full text-center"></div></div>
+                                <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i> Disables PreciseThroughputTimer and sets fixed ramp-up values</div></div>
+                            <div id="durationControls" style="display:none"><div class="card p-6 mb-6"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-clock mr-2"></i> Duration Settings</h3><div class="grid md:grid-cols-2 gap-6">
+                                <div><h4 class="font-semibold text-gray-900 mb-3">Ramp-up</h4><div class="flex items-center gap-2 mb-3"><input type="number" id="usersPerInterval" value="1" min="1" class="input-field w-20 text-center"><span class="text-sm">user(s) every</span><input type="number" id="intervalSeconds" value="1" min="1" class="input-field w-20 text-center"><span class="text-sm">sec</span></div><div class="text-sm text-gray-600"><div>Total Users: <span class="font-semibold" id="totalUsersDisplay">0</span></div><div>Est. ramp-up: <span class="font-semibold" id="estimatedRampup">0h 0m 0s</span></div></div></div>
+                                <div><h4 class="font-semibold text-gray-900 mb-3">Duration</h4><div class="flex items-center gap-2 mb-3"><input type="number" id="durationHours" value="0" min="0" class="input-field w-16 text-center"><span class="text-sm">h</span><input type="number" id="durationMinutes" value="0" min="0" max="59" class="input-field w-16 text-center"><span class="text-sm">m</span><input type="number" id="durationSeconds" value="0" min="0" max="59" class="input-field w-16 text-center"><span class="text-sm">s</span></div><div class="text-sm text-gray-600">Total: <span class="font-semibold" id="totalDuration">0 sec</span></div></div></div></div></div></div>
+                        <div id="content-threadgroups" class="tab-content" style="display:none">
+                            <div class="card p-6 mb-6"><div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4"><div><h3 class="text-lg font-bold text-gray-900 mb-2 flex items-center"><i class="fas fa-layer-group mr-2"></i> Thread Groups Management<span id="modeWarning" class="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full hidden"><i class="fas fa-exclamation-triangle mr-1"></i> Select execution mode first</span></h3><p class="text-sm text-gray-600">Manage thread group status and configurations</p></div><div class="flex flex-col md:flex-row items-start md:items-center gap-3"><button onclick="enableAllThreadGroups()" class="button-primary bg-green-600 hover:bg-green-700"><i class="fas fa-check mr-2"></i> Enable All</button><button onclick="disableAllThreadGroups()" class="button-primary bg-red-600 hover:bg-red-700"><i class="fas fa-times mr-2"></i> Disable All</button><div class="text-sm text-gray-600 mt-2 md:mt-0 md:ml-4"><span class="font-semibold text-green-600" id="enabledCount">0</span> enabled / <span class="font-semibold text-red-600" id="disabledCount">0</span> disabled</div></div></div></div>
+                            <div class="card overflow-hidden"><div class="card-header"><h3 class="text-lg font-bold text-gray-900 flex items-center"><i class="fas fa-table mr-2"></i> Thread Groups Table</h3></div><div class="overflow-x-auto"><table class="w-full"><thead class="bg-gray-50 border-b border-gray-200 sticky top-0"><tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Status</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Name</th>
+                                <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Users</th>
+                                <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Scaled</th>
+                                <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase" id="loopHeader">Loops</th>
+                                <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">TPS/User</th>
+                                <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Orig TPS</th>
+                                <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase">Scaled TPS</th></tr></thead>
+                                <tbody id="threadGroupsTableBody" class="divide-y divide-gray-200"></tbody></table></div></div></div>
+                        <div id="content-variables" class="tab-content" style="display:none"><div class="grid md:grid-cols-2 gap-6">
+                            <div class="card p-6"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-hourglass-half mr-2"></i> Ramp-up Time</h3><div class="text-3xl font-bold text-gray-900 mb-2" id="rampupValue">N/A</div><div class="text-sm text-gray-600" id="rampupHours">N/A</div></div>
+                            <div class="card p-6"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-chart-line mr-2"></i> Steady State</h3><div class="text-3xl font-bold text-gray-900 mb-2" id="steadyStateValue">N/A</div><div class="text-sm text-gray-600" id="steadyStateHours">N/A</div></div></div></div></div></div></div></div></div></div>
+    </main>
+    <div id="toast" class="fixed bottom-4 right-4 bg-black text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-y-20 opacity-0" style="z-index:1000"><span id="toastMessage"></span></div>
     <script>
-        let jmxDocument = null;
-        let threadGroupData = [];
-        let globalVariables = { rampup: "N/A", steadyState: "N/A" };
-        let executionMode = 'iteration';
-
-        const executionModes = {
-            iteration: { description: 'Tests run for specific iterations per user', loopType: 'finite' },
-            duration: { description: 'Tests run for specific duration with infinite loops', loopType: 'infinite' },
-            sanity: { description: 'Quick validation - 1 user, fixed ramp-up, configurable iterations', loopType: 'finite' }
-        };
-
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.remove('tab-active'));
-            document.getElementById(`content-${tab}`).style.display = 'block';
-            document.getElementById(`tab-${tab}`).classList.add('tab-active');
-            if (tab === 'tps-calculator') renderIndividualTPSControls();
-        }
-
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const parser = new DOMParser();
-                jmxDocument = parser.parseFromString(event.target.result, "text/xml");
-                if (jmxDocument.querySelector('parsererror')) {
-                    showToast('Invalid XML format', 'error');
-                    return;
-                }
-                extractGlobalVariables();
-                extractThreadGroups();
-                document.getElementById('uploadPrompt').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-                document.getElementById('downloadBtn').disabled = false;
-                renderTable();
-                updateVariablesTab();
-                showToast('JMX loaded successfully!', 'success');
-            };
-            reader.readAsText(file);
-        });
-
-        function extractGlobalVariables() {
-            const argumentsList = jmxDocument.getElementsByTagName("Arguments");
-            globalVariables = { rampup: "N/A", steadyState: "N/A" };
-            for (let i = 0; i < argumentsList.length; i++) {
-                const arg = argumentsList[i];
-                if (arg.getAttribute("testname") === "rampupSteadyDuration") {
-                    const elements = arg.getElementsByTagName("elementProp");
-                    for (let j = 0; j < elements.length; j++) {
-                        const nameNode = elements[j].getElementsByTagName("stringProp")[0];
-                        const valueNode = elements[j].getElementsByTagName("stringProp")[1];
-                        if (nameNode && valueNode) {
-                            if (nameNode.textContent === "rampup") globalVariables.rampup = valueNode.textContent;
-                            if (nameNode.textContent === "steadyState") globalVariables.steadyState = valueNode.textContent;
-                        }
-                    }
-                }
-            }
-        }
-
-        function extractThreadGroups() {
-            const threadGroups = jmxDocument.getElementsByTagName("ThreadGroup");
-            threadGroupData = [];
-            for (let i = 0; i < threadGroups.length; i++) {
-                const tg = threadGroups[i];
-                const name = tg.getAttribute("testname");
-                const enabled = tg.getAttribute("enabled") === "true" || tg.getAttribute("enabled") === null;
-                let count = 1;
-                const intProps = tg.getElementsByTagName("intProp");
-                for (let j = 0; j < intProps.length; j++) {
-                    if (intProps[j].getAttribute("name") === "ThreadGroup.num_threads") {
-                        count = parseInt(intProps[j].textContent.trim(), 10);
-                        break;
-                    }
-                }
-                if (count === 1) {
-                    const stringProps = tg.getElementsByTagName("stringProp");
-                    for (let j = 0; j < stringProps.length; j++) {
-                        if (stringProps[j].getAttribute("name") === "ThreadGroup.num_threads") {
-                            count = parseInt(stringProps[j].textContent.trim(), 10) || 1;
-                            break;
-                        }
-                    }
-                }
-                let loops = '1';
-                const loopController = tg.querySelector('elementProp[name="ThreadGroup.main_controller"]');
-                if (loopController) {
-                    const loopsProps = loopController.getElementsByTagName('stringProp');
-                    for (let j = 0; j < loopsProps.length; j++) {
-                        if (loopsProps[j].getAttribute('name') === 'LoopController.loops') {
-                            loops = loopsProps[j].textContent.trim();
-                            break;
-                        }
-                    }
-                }
-                let throughput = 0;
-                const tgHashTree = tg.nextElementSibling;
-                if (tgHashTree && tgHashTree.tagName === "hashTree") {
-                    throughput = findThroughputInHashTree(tgHashTree);
-                }
-                threadGroupData.push({ element: tg, name: name, count: count, originalCount: count, loops: loops, status: enabled, throughput: throughput, originalThroughput: throughput });
-            }
-        }
-
-        function findThroughputInHashTree(hashTree) {
-            let throughput = 0;
-            for (let child of hashTree.children) {
-                if (child.tagName === "PreciseThroughputTimer") {
-                    const doubleProps = child.getElementsByTagName("doubleProp");
-                    for (let dp of doubleProps) {
-                        if (dp.getAttribute("name") === "throughput") {
-                            const value = parseFloat(dp.textContent.trim());
-                            if (!isNaN(value)) throughput += value;
-                        } else {
-                            const nameElement = dp.getElementsByTagName("name")[0];
-                            const valueElement = dp.getElementsByTagName("value")[0];
-                            if (nameElement && nameElement.textContent === "throughput" && valueElement) {
-                                const value = parseFloat(valueElement.textContent.trim());
-                                if (!isNaN(value)) throughput += value;
-                            }
-                        }
-                    }
-                }
-                if (child.tagName === "hashTree") throughput += findThroughputInHashTree(child);
-            }
-            return throughput;
-        }
-
-        function calculateUsersFromTPS() {
-            const targetTPS = parseFloat(document.getElementById('targetTPS').value);
-            if (isNaN(targetTPS) || targetTPS <= 0) {
-                showToast('Enter valid TPS > 0', 'error');
-                return;
-            }
-            let totalCurrentUsers = 0, totalCurrentTPS = 0;
-            threadGroupData.forEach(tg => {
-                if (tg.status && tg.throughput > 0) {
-                    totalCurrentUsers += tg.count;
-                    totalCurrentTPS += tg.throughput;
-                }
-            });
-            if (totalCurrentTPS === 0) {
-                showToast('No active thread groups with TPS', 'error');
-                return;
-            }
-            const currentTPSPerUser = totalCurrentTPS / totalCurrentUsers;
-            const requiredUsers = Math.ceil(targetTPS / currentTPSPerUser);
-            const scalingFactor = requiredUsers / totalCurrentUsers;
-            let resultHTML = `<div class="space-y-3"><div class="grid grid-cols-2 gap-4">
-                <div><div class="text-xs text-gray-600">Current TPS</div><div class="text-lg font-bold">${totalCurrentTPS.toFixed(2)} TPS</div></div>
-                <div><div class="text-xs text-gray-600">Target TPS</div><div class="text-lg font-bold text-green-600">${targetTPS.toFixed(2)} TPS</div></div>
-                <div><div class="text-xs text-gray-600">Current Users</div><div class="text-lg font-bold">${totalCurrentUsers}</div></div>
-                <div><div class="text-xs text-gray-600">Required Users</div><div class="text-lg font-bold text-green-600">${requiredUsers}</div></div>
-                <div><div class="text-xs text-gray-600">TPS per User</div><div class="text-lg font-bold">${currentTPSPerUser.toFixed(4)}</div></div>
-                <div><div class="text-xs text-gray-600">Scaling Factor</div><div class="text-lg font-bold">${scalingFactor.toFixed(2)}x</div></div>
-            </div><div class="pt-3 border-t border-gray-200"><div class="text-xs text-gray-600 mb-2">Per Thread Group:</div><div class="space-y-1 text-xs">`;
-            threadGroupData.forEach(tg => {
-                if (tg.status && tg.throughput > 0) {
-                    const newUsers = Math.max(1, Math.ceil(tg.count * scalingFactor));
-                    const newTPS = (tg.throughput * scalingFactor).toFixed(2);
-                    resultHTML += `<div class="flex justify-between p-2 bg-gray-50 rounded"><span class="font-medium">${escapeHtml(tg.name)}</span><span>${tg.count} → <strong>${newUsers}</strong> users | ${tg.throughput.toFixed(2)} → <strong>${newTPS}</strong> TPS</span></div>`;
-                }
-            });
-            resultHTML += `</div></div><button onclick="applyTPSCalculation(${scalingFactor})" class="w-full mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Apply Changes</button></div>`;
-            document.getElementById('tpsResultContent').innerHTML = resultHTML;
-            document.getElementById('tpsCalculationResult').style.display = 'block';
-        }
-
-        function applyTPSCalculation(scalingFactor) {
-            threadGroupData.forEach(tg => {
-                if (tg.status && tg.throughput > 0) {
-                    const newUsers = Math.max(1, Math.ceil(tg.count * scalingFactor));
-                    tg.count = newUsers;
-                    tg.throughput = tg.throughput * scalingFactor;
-                    updateThreadCountInXML(tg.element, newUsers);
-                    const tgHashTree = tg.element.nextElementSibling;
-                    if (tgHashTree && tgHashTree.tagName === "hashTree") {
-                        updateThroughputInHashTree(tgHashTree, scalingFactor);
-                    }
-                }
-            });
-            renderTable();
-            showToast('TPS scaling applied!', 'success');
-            document.getElementById('tpsCalculationResult').style.display = 'none';
-            document.getElementById('targetTPS').value = '';
-        }
-
-        function renderIndividualTPSControls() {
-            const container = document.getElementById('individualTPSControls');
-            let html = '<div class="space-y-4">';
-            threadGroupData.forEach((tg, index) => {
-                if (tg.status) {
-                    const tpsPerUser = tg.count > 0 && tg.throughput > 0 ? (tg.throughput / tg.count).toFixed(4) : 'N/A';
-                    html += `<div class="border border-gray-200 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <h4 class="font-semibold text-gray-900">${escapeHtml(tg.name)}</h4>
-                            <span class="text-xs text-gray-500">TPS/User: ${tpsPerUser}</span>
-                        </div>
-                        <div class="grid grid-cols-3 gap-4">
-                            <div><label class="block text-xs text-gray-600 mb-1">Current Users</label><div class="text-lg font-bold">${tg.count}</div></div>
-                            <div><label class="block text-xs text-gray-600 mb-1">Current TPS</label><div class="text-lg font-bold">${tg.throughput > 0 ? tg.throughput.toFixed(2) : 'N/A'}</div></div>
-                            <div><label class="block text-xs text-gray-600 mb-1">Target TPS</label><input type="number" id="tps-${index}" min="0.01" step="0.01" class="input-field w-full text-center" placeholder="TPS"></div>
-                        </div>
-                        <button onclick="adjustIndividualTPS(${index})" class="mt-3 w-full px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Calculate & Apply</button>
-                    </div>`;
-                }
-            });
-            html += '</div>';
-            container.innerHTML = html;
-        }
-
-        function adjustIndividualTPS(index) {
-            const targetTPS = parseFloat(document.getElementById(`tps-${index}`).value);
-            const tg = threadGroupData[index];
-            if (isNaN(targetTPS) || targetTPS <= 0) {
-                showToast('Enter valid TPS', 'error');
-                return;
-            }
-            if (tg.throughput === 0) {
-                showToast('No TPS configured', 'error');
-                return;
-            }
-            const currentTPSPerUser = tg.throughput / tg.count;
-            const requiredUsers = Math.max(1, Math.ceil(targetTPS / currentTPSPerUser));
-            const scalingFactor = requiredUsers / tg.count;
-            const newTPS = tg.throughput * scalingFactor;
-            if (confirm(`Change ${escapeHtml(tg.name)}:\n\nUsers: ${tg.count} → ${requiredUsers}\nTPS: ${tg.throughput.toFixed(2)} → ${newTPS.toFixed(2)}\n\nApply?`)) {
-                tg.count = requiredUsers;
-                tg.throughput = newTPS;
-                updateThreadCountInXML(tg.element, requiredUsers);
-                const tgHashTree = tg.element.nextElementSibling;
-                if (tgHashTree && tgHashTree.tagName === "hashTree") {
-                    updateThroughputInHashTree(tgHashTree, scalingFactor);
-                }
-                renderTable();
-                renderIndividualTPSControls();
-                showToast(`Updated ${tg.name}!`, 'success');
-            }
-        }
-
-        function renderTable() {
-            const slaves = parseInt(document.getElementById("slaves").value, 10) || 1;
-            let totalOriginalUsers = 0, totalScaledUsers = 0, totalOriginalTPS = 0, totalScaledTPS = 0, enabledCount = 0, disabledCount = 0;
-            threadGroupData.forEach(tg => {
-                let count = tg.count, loops = tg.loops;
-                if (executionMode === 'sanity') {
-                    count = 1;
-                    loops = document.getElementById('sanityIterations').value || '5';
-                } else if (executionMode === 'duration') {
-                    loops = '-1';
-                }
-                const scaledCount = count * slaves;
-                if (tg.status) {
-                    totalOriginalUsers += count;
-                    totalScaledUsers += scaledCount;
-                    if (tg.throughput > 0) {
-                        totalOriginalTPS += tg.throughput;
-                        totalScaledTPS += tg.throughput * slaves;
-                    }
-                    enabledCount++;
-                } else {
-                    disabledCount++;
-                }
-            });
-            document.getElementById('activeGroups').textContent = `${enabledCount} / ${threadGroupData.length}`;
-            document.getElementById('originalUsers').textContent = totalOriginalUsers;
-            document.getElementById('scaledUsers').textContent = totalScaledUsers;
-            document.getElementById('originalTPS').textContent = totalOriginalTPS > 0 ? totalOriginalTPS.toFixed(2) : 'N/A';
-            document.getElementById('scaledTPS').textContent = totalScaledTPS > 0 ? totalScaledTPS.toFixed(2) : 'N/A';
-            document.getElementById('enabledCount').textContent = enabledCount;
-            document.getElementById('disabledCount').textContent = disabledCount;
-            const tableBody = document.getElementById('threadGroupsTableBody');
-            tableBody.innerHTML = '';
-            threadGroupData.forEach((tg, index) => {
-                let count = tg.count, loops = tg.loops;
-                if (executionMode === 'sanity') {
-                    count = 1;
-                    loops = document.getElementById('sanityIterations').value || '5';
-                } else if (executionMode === 'duration') {
-                    loops = '-1';
-                }
-                const scaledCount = count * slaves;
-                const scaledTPS = tg.throughput > 0 ? (tg.throughput * slaves).toFixed(2) : "N/A";
-                const originalTPS = tg.throughput > 0 ? tg.throughput.toFixed(2) : "N/A";
-                const tpsPerUser = tg.count > 0 && tg.throughput > 0 ? (tg.throughput / tg.count).toFixed(4) : "N/A";
-                const statusClass = tg.status ? 'status-enabled' : 'status-disabled';
-                const statusText = tg.status ? 'Enabled' : 'Disabled';
-                const rowClass = tg.status ? '' : 'bg-gray-50';
-                let loopDisplay = executionMode === 'duration' ? '<span class="text-gray-500 italic">Infinite</span>' : `<input type="number" min="-1" value="${loops}" onchange="updateLoopCount(${index}, this.value)" class="input-field w-20 text-center text-sm" ${executionMode === 'sanity' ? 'disabled' : ''}>`;
-                const row = document.createElement('tr');
-                row.className = `${rowClass} hover:bg-gray-100 transition-colors`;
-                row.innerHTML = `
-                    <td class="px-4 py-3"><span onclick="toggleStatus(${index})" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusClass} cursor-pointer hover:opacity-80">${statusText}</span></td>
-                    <td class="px-4 py-3 text-sm font-medium text-gray-900">${escapeHtml(tg.name)}</td>
-                    <td class="px-4 py-3 text-center"><input type="number" min="1" value="${count}" onchange="updateThreadCount(${index}, this.value)" class="input-field w-20 text-center text-sm" ${executionMode === 'sanity' ? 'disabled' : ''}></td>
-                    <td class="px-4 py-3 text-center font-semibold text-gray-900">${scaledCount}</td>
-                    <td class="px-4 py-3 text-center">${loopDisplay}</td>
-                    <td class="px-4 py-3 text-center text-xs text-gray-600">${tpsPerUser}</td>
-                    <td class="px-4 py-3 text-center text-gray-700">${originalTPS}</td>
-                    <td class="px-4 py-3 text-center font-semibold text-gray-900">${scaledTPS}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-            if (executionMode === 'duration') updateDurationFields(totalScaledUsers);
-        }
-
-        function changeExecutionMode() {
-            executionMode = document.getElementById('executionMode').value;
-            document.getElementById('modeDescription').textContent = executionModes[executionMode].description;
-            document.getElementById('durationControls').style.display = executionMode === 'duration' ? 'block' : 'none';
-            document.getElementById('sanityConfig').style.display = executionMode === 'sanity' ? 'block' : 'none';
-            document.getElementById('loopHeader').textContent = executionMode === 'duration' ? 'Loop (∞)' : 'Loops';
-            renderTable();
-            showToast(`Switched to ${executionMode} mode`, 'info');
-        }
-
-        function updateDurationFields(totalScaledUsers) {
-            const steadyState = parseInt(globalVariables.steadyState) || 0;
-            document.getElementById('durationHours').value = Math.floor(steadyState / 3600);
-            document.getElementById('durationMinutes').value = Math.floor((steadyState % 3600) / 60);
-            document.getElementById('durationSeconds').value = steadyState % 60;
-            document.getElementById('totalDuration').textContent = steadyState + ' sec';
-            const rampupSec = parseInt(globalVariables.rampup) || 0;
-            const intervalSec = Math.max(1, Math.round(rampupSec / totalScaledUsers));
-            document.getElementById('usersPerInterval').value = 1;
-            document.getElementById('intervalSeconds').value = intervalSec;
-            document.getElementById('totalUsersDisplay').textContent = totalScaledUsers;
-            updateEstimatedRampup();
-        }
-
-        function updateEstimatedRampup() {
-            const usersPerInterval = parseInt(document.getElementById('usersPerInterval').value) || 1;
-            const intervalSeconds = parseInt(document.getElementById('intervalSeconds').value) || 1;
-            const totalUsers = parseInt(document.getElementById('totalUsersDisplay').textContent) || 1;
-            const rampupSeconds = Math.ceil(totalUsers / usersPerInterval) * intervalSeconds;
-            globalVariables.rampup = rampupSeconds.toString();
-            const hrs = Math.floor(rampupSeconds / 3600);
-            const mins = Math.floor((rampupSeconds % 3600) / 60);
-            const secs = rampupSeconds % 60;
-            document.getElementById('estimatedRampup').textContent = `${hrs}h ${mins}m ${secs}s`;
-        }
-
-        function toggleStatus(index) {
-            threadGroupData[index].status = !threadGroupData[index].status;
-            threadGroupData[index].element.setAttribute("enabled", threadGroupData[index].status.toString());
-            renderTable();
-        }
-
-        function updateThreadCount(index, value) {
-            threadGroupData[index].count = parseInt(value, 10) || 1;
-            renderTable();
-        }
-
-        function updateLoopCount(index, value) {
-            threadGroupData[index].loops = value;
-            renderTable();
-        }
-
-        function enableAllThreadGroups() {
-            threadGroupData.forEach(tg => {
-                tg.status = true;
-                tg.element.setAttribute("enabled", "true");
-            });
-            renderTable();
-            showToast('All enabled', 'success');
-        }
-
-        function disableAllThreadGroups() {
-            threadGroupData.forEach(tg => {
-                tg.status = false;
-                tg.element.setAttribute("enabled", "false");
-            });
-            renderTable();
-            showToast('All disabled', 'warning');
-        }
-
-        function applyMasterScale() {
-            if (!jmxDocument) {
-                showToast('Upload JMX first', 'error');
-                return;
-            }
-            const percent = parseFloat(document.getElementById("masterScale").value);
-            if (isNaN(percent) || percent <= 0) {
-                showToast('Enter valid percentage', 'error');
-                return;
-            }
-            const factor = percent / 100;
-            threadGroupData.forEach(tg => {
-                const scaledThreads = Math.max(1, Math.ceil(tg.count * factor));
-                tg.count = scaledThreads;
-                updateThreadCountInXML(tg.element, scaledThreads);
-                if (tg.throughput > 0) {
-                    tg.throughput = tg.throughput * factor;
-                    const tgHashTree = tg.element.nextElementSibling;
-                    if (tgHashTree && tgHashTree.tagName === "hashTree") {
-                        updateThroughputInHashTree(tgHashTree, factor);
-                    }
-                }
-            });
-            renderTable();
-            showToast(`Applied ${percent}% scaling`, 'success');
-        }
-
-        function updateThreadCountInXML(tgElement, count) {
-            let updated = false;
-            const intProps = tgElement.getElementsByTagName("intProp");
-            for (let i = 0; i < intProps.length; i++) {
-                if (intProps[i].getAttribute("name") === "ThreadGroup.num_threads") {
-                    intProps[i].textContent = count.toString();
-                    updated = true;
-                    break;
-                }
-            }
-            if (!updated) {
-                const stringProps = tgElement.getElementsByTagName("stringProp");
-                for (let i = 0; i < stringProps.length; i++) {
-                    if (stringProps[i].getAttribute("name") === "ThreadGroup.num_threads") {
-                        stringProps[i].textContent = count.toString();
-                        updated = true;
-                        break;
-                    }
-                }
-            }
-            if (!updated) {
-                const sp = jmxDocument.createElement("stringProp");
-                sp.setAttribute("name", "ThreadGroup.num_threads");
-                sp.textContent = count.toString();
-                tgElement.appendChild(sp);
-            }
-        }
-
-        function updateThroughputInHashTree(hashTree, multiplier) {
-            for (let child of hashTree.children) {
-                if (child.tagName === "PreciseThroughputTimer") {
-                    const doubleProps = child.getElementsByTagName("doubleProp");
-                    for (let dp of doubleProps) {
-                        if (dp.getAttribute("name") === "throughput") {
-                            const current = parseFloat(dp.textContent.trim());
-                            if (!isNaN(current)) dp.textContent = (current * multiplier).toString();
-                        } else {
-                            const nameEl = dp.getElementsByTagName("name")[0];
-                            const valEl = dp.getElementsByTagName("value")[0];
-                            if (nameEl && nameEl.textContent === "throughput" && valEl) {
-                                const current = parseFloat(valEl.textContent.trim());
-                                if (!isNaN(current)) valEl.textContent = (current * multiplier).toString();
-                            }
-                        }
-                    }
-                }
-                if (child.tagName === "hashTree") updateThroughputInHashTree(child, multiplier);
-            }
-        }
-
-        function updateVariablesTab() {
-            document.getElementById('rampupValue').textContent = globalVariables.rampup + ' sec';
-            document.getElementById('rampupHours').textContent = secondsToHours(globalVariables.rampup);
-            document.getElementById('steadyStateValue').textContent = globalVariables.steadyState + ' sec';
-            document.getElementById('steadyStateHours').textContent = secondsToHours(globalVariables.steadyState);
-        }
-
-        function secondsToHours(seconds) {
-            if (seconds === "N/A" || seconds === "") return "N/A";
-            const sec = parseFloat(seconds);
-            if (isNaN(sec)) return "N/A";
-            return `${(sec / 3600).toFixed(2)} hours`;
-        }
-
-        function downloadJMX() {
-            if (!jmxDocument) {
-                showToast('No JMX loaded', 'error');
-                return;
-            }
-            try {
-                threadGroupData.forEach(tg => {
-                    let finalCount = tg.count, finalLoops = tg.loops, finalRampup = null;
-                    if (executionMode === 'sanity') {
-                        finalCount = 1;
-                        finalLoops = document.getElementById('sanityIterations').value || '5';
-                        finalRampup = document.getElementById('sanityRampup').value || '1';
-                    } else if (executionMode === 'duration') {
-                        finalLoops = '-1';
-                    }
-                    tg.element.setAttribute("enabled", tg.status.toString());
-                    updateThreadCountInXML(tg.element, finalCount);
-                    updateLoopCountInXML(tg.element, finalLoops);
-                    if (executionMode === 'sanity') {
-                        updateRampupInXML(tg.element, finalRampup);
-                        disablePreciseThroughputTimer(tg.element);
-                    }
-                });
-                if (executionMode === 'duration') updateGlobalVariables();
-                const serializer = new XMLSerializer();
-                let xmlString = serializer.serializeToString(jmxDocument);
-                if (!xmlString.startsWith('<?xml')) {
-                    xmlString = '<?xml version="1.0" encoding="UTF-8"?>\n' + xmlString;
-                }
-                const blob = new Blob([xmlString], { type: 'application/xml' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'modified_test_plan.jmx';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-                showToast('JMX downloaded!', 'success');
-            } catch (error) {
-                showToast('Download failed: ' + error.message, 'error');
-            }
-        }
-
-        function updateRampupInXML(tgElement, rampupValue) {
-            let updated = false;
-            const stringProps = tgElement.getElementsByTagName("stringProp");
-            for (let i = 0; i < stringProps.length; i++) {
-                if (stringProps[i].getAttribute("name") === "ThreadGroup.ramp_time") {
-                    stringProps[i].textContent = rampupValue;
-                    updated = true;
-                    break;
-                }
-            }
-            if (!updated) {
-                const intProps = tgElement.getElementsByTagName("intProp");
-                for (let i = 0; i < intProps.length; i++) {
-                    if (intProps[i].getAttribute("name") === "ThreadGroup.ramp_time") {
-                        intProps[i].textContent = rampupValue;
-                        updated = true;
-                        break;
-                    }
-                }
-            }
-            if (!updated) {
-                const sp = jmxDocument.createElement("stringProp");
-                sp.setAttribute("name", "ThreadGroup.ramp_time");
-                sp.textContent = rampupValue;
-                tgElement.appendChild(sp);
-            }
-        }
-
-        function updateLoopCountInXML(tgElement, loops) {
-            const loopController = tgElement.querySelector('elementProp[name="ThreadGroup.main_controller"]');
-            if (loopController) {
-                const loopsProps = loopController.getElementsByTagName('stringProp');
-                for (let j = 0; j < loopsProps.length; j++) {
-                    if (loopsProps[j].getAttribute('name') === 'LoopController.loops') {
-                        loopsProps[j].textContent = loops;
-                        return;
-                    }
-                }
-                const loopsIntProps = loopController.getElementsByTagName('intProp');
-                for (let j = 0; j < loopsIntProps.length; j++) {
-                    if (loopsIntProps[j].getAttribute('name') === 'LoopController.loops') {
-                        loopsIntProps[j].textContent = loops;
-                        return;
-                    }
-                }
-            }
-        }
-
-        function disablePreciseThroughputTimer(threadGroup) {
-            const tgHashTree = threadGroup.nextElementSibling;
-            if (tgHashTree && tgHashTree.tagName === "hashTree") {
-                const timers = tgHashTree.getElementsByTagName("PreciseThroughputTimer");
-                for (let timer of timers) timer.setAttribute("enabled", "false");
-            }
-        }
-
-        function updateGlobalVariables() {
-            const argumentsList = jmxDocument.getElementsByTagName("Arguments");
-            for (let i = 0; i < argumentsList.length; i++) {
-                const arg = argumentsList[i];
-                if (arg.getAttribute("testname") === "rampupSteadyDuration") {
-                    const elements = arg.getElementsByTagName("elementProp");
-                    for (let j = 0; j < elements.length; j++) {
-                        const nameNode = elements[j].getElementsByTagName("stringProp")[0];
-                        const valueNode = elements[j].getElementsByTagName("stringProp")[1];
-                        if (nameNode && valueNode) {
-                            if (nameNode.textContent === "rampup") valueNode.textContent = globalVariables.rampup;
-                            if (nameNode.textContent === "steadyState") {
-                                const hours = parseInt(document.getElementById('durationHours').value) || 0;
-                                const minutes = parseInt(document.getElementById('durationMinutes').value) || 0;
-                                const seconds = parseInt(document.getElementById('durationSeconds').value) || 0;
-                                valueNode.textContent = ((hours * 3600) + (minutes * 60) + seconds).toString();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            toastMessage.textContent = message;
-            toast.className = "fixed bottom-4 right-4 text-white px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300";
-            if (type === 'success') toast.className += ' bg-green-600';
-            else if (type === 'error') toast.className += ' bg-red-600';
-            else if (type === 'warning') toast.className += ' bg-yellow-600';
-            else toast.className += ' bg-black';
-            toast.style.transform = 'translateY(0)';
-            toast.style.opacity = '1';
-            setTimeout(() => {
-                toast.style.transform = 'translateY(5rem)';
-                toast.style.opacity = '0';
-            }, 3000);
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            ['usersPerInterval', 'intervalSeconds'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.addEventListener('change', updateEstimatedRampup);
-            });
-            ['durationHours', 'durationMinutes', 'durationSeconds'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.addEventListener('change', function() {
-                    const hours = parseInt(document.getElementById('durationHours').value) || 0;
-                    const minutes = parseInt(document.getElementById('durationMinutes').value) || 0;
-                    const seconds = parseInt(document.getElementById('durationSeconds').value) || 0;
-                    document.getElementById('totalDuration').textContent = ((hours * 3600) + (minutes * 60) + seconds) + ' sec';
-                });
-            });
-            ['sanityRampup', 'sanityIterations'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.addEventListener('change', renderTable);
-            });
-        });
+        let jmxDocument=null;let threadGroupData=[];let calculationResults={};let globalVariables={rampup:"N/A",steadyState:"N/A"};let executionMode=null;const executionModes={iteration:{description:'Tests run for specific iterations per user',loopType:'finite',name:'Iteration-Based'},duration:{description:'Tests run for specific duration with infinite loops - TPS Calculator available',loopType:'infinite',name:'Duration-Based'},sanity:{description:'Quick validation - 1 user, fixed ramp-up, configurable iterations',loopType:'finite',name:'Sanity Mode'}};
+        function initializeUI(){document.getElementById('uploadPrompt').style.display='block';document.getElementById('fileManagementSection').style.display='none';document.getElementById('downloadBtn').disabled=true;document.getElementById('executionMode').selectedIndex=0;document.getElementById('modeDescription').textContent='Please select an execution mode to proceed';document.getElementById('modeIndicator').style.display='none';document.getElementById('currentMode').textContent='Not Selected';document.getElementById('modeSpecificControls').style.display='none';document.getElementById('tab-tps-calculator').classList.add('tab-disabled');}
+        document.addEventListener('DOMContentLoaded',function(){initializeUI();document.getElementById('fileInput').addEventListener('change',handleFileUpload);document.getElementById('durationHours').addEventListener('input',updateDurationFromFields);document.getElementById('durationMinutes').addEventListener('input',updateDurationFromFields);document.getElementById('durationSeconds').addEventListener('input',updateDurationFromFields);document.getElementById('usersPerInterval').addEventListener('input',updateRampupFromFields);document.getElementById('intervalSeconds').addEventListener('input',updateRampupFromFields);});
+        function handleFileUpload(e){const file=e.target.files[0];if(!file)return;document.getElementById('loadingOverlay').classList.remove('hidden');const reader=new FileReader();reader.onload=function(event){try{const parser=new DOMParser();jmxDocument=parser.parseFromString(event.target.result,"text/xml");if(jmxDocument.querySelector('parsererror')){showToast('Invalid XML format in JMX file','error');document.getElementById('loadingOverlay').classList.add('hidden');return;}
+        extractGlobalVariables();extractThreadGroups();document.getElementById('uploadPrompt').style.display='none';document.getElementById('fileManagementSection').style.display='block';document.getElementById('downloadBtn').disabled=false;executionMode=null;document.getElementById('executionMode').selectedIndex=0;document.getElementById('modeDescription').textContent='Please select an execution mode to proceed';document.getElementById('modeIndicator').style.display='none';document.getElementById('currentMode').textContent='Not Selected';document.getElementById('modeWarning').classList.remove('hidden');document.getElementById('modeSpecificControls').style.display='none';document.getElementById('tpsCalculatorContent').style.display='none';document.getElementById('tpsCalculatorDisabledMessage').style.display='block';document.getElementById('tab-tps-calculator').classList.add('tab-disabled');document.getElementById('currentModeDisplay').textContent='Not Selected';document.getElementById('modeDescription2').textContent='Select a mode to see description';calculationResults={};updateVariablesTab();showToast(`Loaded ${threadGroupData.length} thread groups successfully! Please select an execution mode.`,'success');}catch(error){showToast('Error processing JMX file: '+error.message,'error');}finally{document.getElementById('loadingOverlay').classList.add('hidden');}};reader.onerror=function(){showToast('Error reading file','error');document.getElementById('loadingOverlay').classList.add('hidden');};reader.readAsText(file);}
+        function switchTab(tab){if(tab==='tps-calculator'&&executionMode!=='duration'){showToast('TPS Calculator is only available in Duration mode','warning');return;}
+        document.querySelectorAll('.tab-content').forEach(el=>{el.style.display='none';el.classList.remove('fade-in');});document.querySelectorAll('[id^="tab-"]').forEach(el=>el.classList.remove('tab-active'));const contentEl=document.getElementById(`content-${tab}`);if(contentEl){contentEl.style.display='block';setTimeout(()=>contentEl.classList.add('fade-in'),10);}
+        document.getElementById(`tab-${tab}`).classList.add('tab-active');if(tab==='tps-calculator'){if(executionMode==='duration'){renderTPSCalculatorTable();updateBulkCalculationTable();}}else if(tab==='threadgroups'){renderTable();if(!executionMode){document.getElementById('modeWarning').classList.remove('hidden');}else{document.getElementById('modeWarning').classList.add('hidden');}}else if(tab==='execution'){const executionMode2=document.getElementById('executionMode2');if(executionMode){executionMode2.value=executionMode;}else{executionMode2.selectedIndex=0;}
+        updateModeDescription();}else if(tab==='variables'){updateVariablesTab();}}
+        function extractGlobalVariables(){const argumentsList=jmxDocument.getElementsByTagName("Arguments");globalVariables={rampup:"N/A",steadyState:"N/A"};for(let i=0;i<argumentsList.length;i++){const arg=argumentsList[i];if(arg.getAttribute("testname")==="rampupSteadyDuration"){const elements=arg.getElementsByTagName("elementProp");for(let j=0;j<elements.length;j++){const nameNode=elements[j].getElementsByTagName("stringProp")[0];const valueNode=elements[j].getElementsByTagName("stringProp")[1];if(nameNode&&valueNode){if(nameNode.textContent==="rampup"){globalVariables.rampup=valueNode.textContent;}
+        if(nameNode.textContent==="steadyState"){globalVariables.steadyState=valueNode.textContent;}}}break;}}}
+        function extractThreadGroups(){const threadGroups=jmxDocument.getElementsByTagName("ThreadGroup");threadGroupData=[];calculationResults={};for(let i=0;i<threadGroups.length;i++){const tg=threadGroups[i];const name=tg.getAttribute("testname");const enabled=tg.getAttribute("enabled")==="true"||tg.getAttribute("enabled")===null;let count=1;const intProps=tg.getElementsByTagName("intProp");for(let j=0;j<intProps.length;j++){if(intProps[j].getAttribute("name")==="ThreadGroup.num_threads"){count=parseInt(intProps[j].textContent.trim(),10);break;}}
+        if(count===1){const stringProps=tg.getElementsByTagName("stringProp");for(let j=0;j<stringProps.length;j++){if(stringProps[j].getAttribute("name")==="ThreadGroup.num_threads"){count=parseInt(stringProps[j].textContent.trim(),10)||1;break;}}}
+        let loops='1';const loopController=tg.querySelector('elementProp[name="ThreadGroup.main_controller"]');if(loopController){const loopsProps=loopController.getElementsByTagName('stringProp');for(let j=0;j<loopsProps.length;j++){if(loopsProps[j].getAttribute('name')==='LoopController.loops'){loops=loopsProps[j].textContent.trim();break;}}
+        const loopsIntProps=loopController.getElementsByTagName('intProp');for(let j=0;j<loopsIntProps.length;j++){if(loopsIntProps[j].getAttribute('name')==='LoopController.loops'){loops=loopsIntProps[j].textContent.trim();break;}}}
+        let throughput=0;const tgHashTree=tg.nextElementSibling;if(tgHashTree&&tgHashTree.tagName==="hashTree"){throughput=findThroughputInHashTree(tgHashTree);}
+        threadGroupData.push({element:tg,name:name,threads:count,originalThreads:count,loops:loops,status:enabled,tps:throughput,originalTPS:throughput,targetTPS:throughput,calculatedThreads:count});}}
+        function findThroughputInHashTree(hashTree){let throughput=0;for(let child of hashTree.children){if(child.tagName==="PreciseThroughputTimer"){const doubleProps=child.getElementsByTagName("doubleProp");for(let dp of doubleProps){if(dp.getAttribute("name")==="throughput"){const value=parseFloat(dp.textContent.trim());if(!isNaN(value)){throughput+=value;}}else{const nameElement=dp.getElementsByTagName("name")[0];const valueElement=dp.getElementsByTagName("value")[0];if(nameElement&&nameElement.textContent==="throughput"&&valueElement){const value=parseFloat(valueElement.textContent.trim());if(!isNaN(value)){throughput+=value;}}}}}
+        if(child.tagName==="hashTree"){throughput+=findThroughputInHashTree(child);}}
+        return throughput;}
+        function renderTable(){if(!jmxDocument||threadGroupData.length===0){return;}
+        const slaves=parseInt(document.getElementById("slaves").value,10)||1;let totalOriginalUsers=0;let totalScaledUsers=0;let totalOriginalTPS=0;let totalScaledTPS=0;let enabledCount=0;let disabledCount=0;threadGroupData.forEach(tg=>{let count=tg.threads;let loops=tg.loops;if(executionMode==='sanity'){count=1;loops=document.getElementById('sanityIterations')?.value||'5';}else if(executionMode==='duration'){loops='-1';}
+        const scaledCount=count*slaves;if(tg.status){totalOriginalUsers+=tg.originalThreads;totalScaledUsers+=tg.originalThreads*slaves;if(tg.originalTPS>0){totalOriginalTPS+=tg.originalTPS;totalScaledTPS+=tg.originalTPS*slaves;}enabledCount++;}else{disabledCount++;}});document.getElementById('activeGroups').textContent=`${enabledCount} / ${threadGroupData.length}`;document.getElementById('originalUsers').textContent=totalOriginalUsers;document.getElementById('scaledUsers').textContent=totalScaledUsers;document.getElementById('originalTPS').textContent=totalOriginalTPS>0?totalOriginalTPS.toFixed(2):'N/A';document.getElementById('scaledTPS').textContent=totalScaledTPS>0?totalScaledTPS.toFixed(2):'N/A';document.getElementById('enabledCount').textContent=enabledCount;document.getElementById('disabledCount').textContent=disabledCount;updateModeDisplay(totalScaledUsers);if(executionMode==='duration'){document.getElementById('totalUsersDisplay').textContent=totalScaledUsers;updateEstimatedRampup();}
+        const tableBody=document.getElementById('threadGroupsTableBody');tableBody.innerHTML='';threadGroupData.forEach((tg,index)=>{let count=tg.threads;let loops=tg.loops;if(executionMode==='sanity'){count=1;loops=document.getElementById('sanityIterations')?.value||'5';}else if(executionMode==='duration'){loops='-1';}
+        const scaledCount=count*slaves;const scaledTPS=tg.tps>0?(tg.tps*slaves).toFixed(2):"N/A";const originalTPS=tg.originalTPS>0?tg.originalTPS.toFixed(2):"N/A";const tpsPerUser=tg.originalThreads>0&&tg.originalTPS>0?(tg.originalTPS/tg.originalThreads).toFixed(4):"N/A";const statusClass=tg.status?'status-enabled':'status-disabled';const statusText=tg.status?'Enabled':'Disabled';const rowClass=tg.status?'':'bg-gray-50';let loopDisplay='';if(executionMode==='duration'){loopDisplay='<span class="text-gray-500 italic">Infinite</span>';}else{loopDisplay=`<input type="number" min="-1" value="${loops}" onchange="updateLoopCount(${index}, this.value)" class="input-field w-20 text-center text-sm" title="-1 for infinite" ${!executionMode||executionMode==='sanity'?'disabled':''}>`;}
+        const row=document.createElement('tr');row.className=`${rowClass} table-row hover:bg-gray-100 transition-colors`;row.innerHTML=`<td class="px-4 py-3"><span onclick="toggleStatus(${index})" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusClass} cursor-pointer hover:opacity-80 transition-opacity">${statusText}</span></td><td class="px-4 py-3 text-sm font-medium text-gray-900">${escapeHtml(tg.name)}</td><td class="px-4 py-3 text-center"><input type="number" min="1" value="${count}" onchange="updateThreadCount(${index}, this.value)" class="input-field w-20 text-center text-sm" ${!executionMode||executionMode==='sanity'?'disabled':''}></td><td class="px-4 py-3 text-center font-semibold text-gray-900">${scaledCount}</td><td class="px-4 py-3 text-center">${loopDisplay}</td><td class="px-4 py-3 text-center text-xs text-gray-600">${tpsPerUser}</td><td class="px-4 py-3 text-center text-gray-700">${originalTPS}</td><td class="px-4 py-3 text-center font-semibold text-gray-900">${scaledTPS}</td>`;tableBody.appendChild(row);});}
+        function renderTPSCalculatorTable(){if(!jmxDocument||threadGroupData.length===0){return;}
+        const tableBody=document.getElementById('tpsCalculatorTable');tableBody.innerHTML='';threadGroupData.forEach((tg,index)=>{const responseTime=tg.originalTPS>0?(tg.originalThreads/tg.originalTPS).toFixed(2)+'s':'N/A';const statusClass=tg.status?'status-enabled':'status-disabled';const statusText=tg.status?'✓ Enabled':'✗ Disabled';const rowClass=tg.status&&tg.originalTPS>0?'':'bg-gray-50';const row=document.createElement('tr');row.className=rowClass;row.id=`tpsRow_${index}`;if(tg.status&&tg.originalTPS>0){row.innerHTML=`<td class="px-4 py-3 text-center">${index+1}</td><td class="px-4 py-3"><strong>${escapeHtml(tg.name)}</strong></td><td class="px-4 py-3 text-center ${statusClass}">${statusText}</td><td class="px-4 py-3 text-center"><strong>${tg.originalThreads}</strong></td><td class="px-4 py-3 text-center"><strong>${tg.originalTPS.toFixed(2)}</strong></td><td class="px-4 py-3 text-center text-sm text-gray-600">${responseTime}</td><td class="px-4 py-3 text-center"><input type="number" id="tpsTarget_${index}" class="input-cell" step="0.01" min="0.01" value="${tg.originalTPS.toFixed(2)}"></td><td class="px-4 py-3 text-center"><button onclick="calculateIndividualTPS(${index})" class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"><i class="fas fa-calculator mr-1"></i> Calculate</button></td>`;}else{row.innerHTML=`<td class="px-4 py-3 text-center">${index+1}</td><td class="px-4 py-3 text-gray-500">${escapeHtml(tg.name)}</td><td class="px-4 py-3 text-center ${statusClass}">${statusText}</td><td class="px-4 py-3 text-center text-gray-500">${tg.originalThreads}</td><td class="px-4 py-3 text-center text-gray-500">${tg.originalTPS>0?tg.originalTPS.toFixed(2):'N/A'}</td><td class="px-4 py-3 text-center text-gray-500">${responseTime}</td><td colspan="2" class="px-4 py-3 text-center text-gray-500"><em>${!tg.status?'Disabled':'No TPS configured'}</em></td>`;}
+        tableBody.appendChild(row);});updateSummary();}
+        function calculateIndividualTPS(index){const tg=threadGroupData[index];const targetTPS=parseFloat(document.getElementById(`tpsTarget_${index}`).value);if(isNaN(targetTPS)||targetTPS<=0){showToast('Please enter a valid target TPS > 0','error');return;}
+        if(tg.originalTPS===0){showToast('Cannot calculate: Current TPS is 0','error');return;}
+        const responseTime=tg.originalThreads/tg.originalTPS;const newThreadsExact=targetTPS*responseTime;const newThreads=Math.ceil(newThreadsExact);calculationResults[index]={targetTPS:targetTPS,calculatedThreads:newThreads,responseTime:responseTime,applied:false};document.getElementById(`tpsRow_${index}`).classList.add('calculated-row');updateBulkCalculationTable();addLog(`[${tg.name}] Calculated: ${tg.originalThreads} threads @ ${tg.originalTPS.toFixed(2)} TPS → ${newThreads} threads @ ${targetTPS.toFixed(2)} TPS (RT: ${responseTime.toFixed(2)}s)`);updateSummary();showToast(`Calculated: ${newThreads} threads for ${targetTPS.toFixed(2)} TPS`,'info');}
+        function updateBulkCalculationTable(){const tableBody=document.getElementById('bulkCalculationTableBody');const resultsSection=document.getElementById('calculationResultsTable');const pendingCountEl=document.getElementById('pendingCount');const appliedCountEl=document.getElementById('appliedCount');const totalCalculationsEl=document.getElementById('totalCalculations');const applyAllBtn=document.getElementById('applyAllBtn');tableBody.innerHTML='';let applied=0;let pending=0;let total=0;Object.keys(calculationResults).forEach(index=>{const tg=threadGroupData[index];const calc=calculationResults[index];if(calc&&tg.status){total++;const threadChange=calc.calculatedThreads-tg.originalThreads;const threadChangePercent=Math.round(((calc.calculatedThreads-tg.originalThreads)/tg.originalThreads)*100);const row=document.createElement('tr');row.className=calc.applied?'applied-row':'calculated-row';let changeIndicator='';if(threadChange>0){changeIndicator=`<span class="change-indicator change-up">+${threadChange} (+${threadChangePercent}%)</span>`;}else if(threadChange<0){changeIndicator=`<span class="change-indicator change-down">${threadChange} (${threadChangePercent}%)</span>`;}else{changeIndicator=`<span class="change-indicator change-neutral">No change</span>`;}
+        row.innerHTML=`<td class="px-4 py-2 text-sm font-medium text-gray-900">${escapeHtml(tg.name)}</td><td class="px-4 py-2 text-center text-sm"><div>${tg.originalThreads} threads</div><div class="text-xs text-gray-500">${tg.originalTPS.toFixed(2)} TPS</div></td><td class="px-4 py-2 text-center text-sm"><div>${calc.calculatedThreads} threads</div><div class="text-xs text-gray-500">${calc.targetTPS.toFixed(2)} TPS</div></td><td class="px-4 py-2 text-center text-sm"><div class="text-gray-600">${calc.responseTime.toFixed(2)}s</div></td><td class="px-4 py-2 text-center text-sm">${changeIndicator}</td><td class="px-4 py-2 text-center"><span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${calc.applied?'bg-green-100 text-green-800':'bg-yellow-100 text-yellow-800'}">${calc.applied?'✓ Applied':'Pending'}</span></td>`;tableBody.appendChild(row);if(calc.applied){applied++;}else{pending++;}}});
+        pendingCountEl.textContent=pending;appliedCountEl.textContent=applied;totalCalculationsEl.textContent=total;if(total>0){resultsSection.style.display='block';applyAllBtn.disabled=(pending===0);}else{resultsSection.style.display='none';applyAllBtn.disabled=true;}}
+        function calculateBulkTPS(){const targetTPS=parseFloat(document.getElementById('targetTPS').value);if(isNaN(targetTPS)||targetTPS<=0){showToast('Enter a valid total TPS > 0','error');return;}
+        let totalCurrentThreads=0;let totalCurrentTPS=0;let activeGroups=0;threadGroupData.forEach(tg=>{if(tg.status&&tg.originalTPS>0){totalCurrentThreads+=tg.originalThreads;totalCurrentTPS+=tg.originalTPS;activeGroups++;}});if(totalCurrentTPS===0){showToast('No active thread groups with TPS','error');return;}
+        const scalingFactor=targetTPS/totalCurrentTPS;let appliedCount=0;threadGroupData.forEach((tg,index)=>{if(tg.status&&tg.originalTPS>0){const newTPS=tg.originalTPS*scalingFactor;document.getElementById(`tpsTarget_${index}`).value=newTPS.toFixed(2);calculateIndividualTPS(index);appliedCount++;}});showToast(`Calculated TPS for ${appliedCount} thread groups (scaling factor: ${scalingFactor.toFixed(2)}x)`,'success');}
+        function applyAllCalculations(){let applied=0;let alreadyApplied=0;Object.keys(calculationResults).forEach(index=>{const calc=calculationResults[index];const tg=threadGroupData[index];if(calc&&!calc.applied){tg.originalThreads=calc.calculatedThreads;tg.threads=calc.calculatedThreads;tg.originalTPS=calc.targetTPS;tg.tps=calc.targetTPS;updateThreadCountInXML(tg.element,calc.calculatedThreads);const tgHashTree=tg.element.nextElementSibling;if(tgHashTree&&tgHashTree.tagName==="hashTree"){setExactThroughputInHashTree(tgHashTree,calc.targetTPS);}
+        calc.applied=true;applied++;document.getElementById(`tpsTarget_${index}`).value=calc.targetTPS.toFixed(2);document.getElementById(`tpsRow_${index}`).classList.remove('calculated-row');document.getElementById(`tpsRow_${index}`).classList.add('applied-row');}else if(calc&&calc.applied){alreadyApplied++;}});if(applied>0){renderTable();renderTPSCalculatorTable();updateBulkCalculationTable();updateSummary();addLog(`✓ Applied ${applied} TPS changes`);showToast(`Applied ${applied} TPS changes to thread groups`,'success');}else if(alreadyApplied>0){showToast(`All TPS changes already applied (${alreadyApplied} total)`,'info');}else{showToast('No pending TPS changes to apply','warning');}}
+        function clearCalculations(){if(Object.keys(calculationResults).length===0){showToast('No calculations to clear','info');return;}
+        if(confirm('Clear all calculation results?')){Object.keys(calculationResults).forEach(index=>{const calc=calculationResults[index];if(!calc.applied){delete calculationResults[index];document.getElementById(`tpsRow_${index}`).classList.remove('calculated-row');const tg=threadGroupData[index];document.getElementById(`tpsTarget_${index}`).value=tg.originalTPS.toFixed(2);}});updateBulkCalculationTable();updateSummary();addLog('↺ Cleared pending calculations');showToast('Cleared pending calculations','info');}}
+        function updateSummary(){let totalThreads=0;let totalTPS=0;let activeGroups=0;let totalResponseTime=0;let pendingCount=0;threadGroupData.forEach(tg=>{if(tg.status&&tg.originalTPS>0){totalThreads+=tg.originalThreads;totalTPS+=tg.originalTPS;totalResponseTime+=(tg.originalThreads/tg.originalTPS);activeGroups++;}});Object.keys(calculationResults).forEach(index=>{if(calculationResults[index]&&!calculationResults[index].applied){pendingCount++;}});const slaves=parseInt(document.getElementById("slaves").value,10)||1;document.getElementById('totalThreads').textContent=totalThreads;document.getElementById('totalTPS').textContent=totalTPS.toFixed(2);document.getElementById('tpsActiveGroups').textContent=activeGroups;document.getElementById('groupCount').textContent=threadGroupData.length;document.getElementById('avgResponseTime').textContent=activeGroups>0?(totalResponseTime/activeGroups).toFixed(2)+'s':'0.00s';document.getElementById('calcCount').textContent=pendingCount;document.getElementById('activeGroups').textContent=`${activeGroups} / ${threadGroupData.length}`;document.getElementById('originalUsers').textContent=totalThreads;document.getElementById('scaledUsers').textContent=totalThreads*slaves;document.getElementById('originalTPS').textContent=totalTPS>0?totalTPS.toFixed(2):'N/A';document.getElementById('scaledTPS').textContent=totalTPS>0?(totalTPS*slaves).toFixed(2):'N/A';}
+        function setExactThroughputInHashTree(hashTree,exactTPS){for(let child of hashTree.children){if(child.tagName==="PreciseThroughputTimer"){const doubleProps=child.getElementsByTagName("doubleProp");for(let dp of doubleProps){if(dp.getAttribute("name")==="throughput"){dp.textContent=exactTPS.toString();}else{const nameElement=dp.getElementsByTagName("name")[0];const valueElement=dp.getElementsByTagName("value")[0];if(nameElement&&nameElement.textContent==="throughput"&&valueElement){valueElement.textContent=exactTPS.toString();}}}}if(child.tagName==="hashTree"){setExactThroughputInHashTree(child,exactTPS);}}}
+        function updateThreadCountInXML(tgElement,count){let found=false;const intProps=tgElement.getElementsByTagName("intProp");for(let i=0;i<intProps.length;i++){if(intProps[i].getAttribute("name")==="ThreadGroup.num_threads"){intProps[i].textContent=count.toString();found=true;break;}}
+        if(!found){const stringProps=tgElement.getElementsByTagName("stringProp");for(let i=0;i<stringProps.length;i++){if(stringProps[i].getAttribute("name")==="ThreadGroup.num_threads"){stringProps[i].textContent=count.toString();found=true;break;}}}}
+        function updateModeDisplay(totalScaledUsers){if(!executionMode){document.getElementById('modeDescription').textContent='Please select an execution mode to proceed';document.getElementById('modeDescription2').textContent='Select a mode to see description';document.getElementById('modeIndicator').style.display='none';document.getElementById('currentMode').textContent='Not Selected';document.getElementById('currentModeDisplay').textContent='Not Selected';document.getElementById('loopHeader').textContent='Loops';document.getElementById('tpsDisabledMessage').textContent='Please select Duration Mode to use TPS Calculator. For Iteration/Sanity modes, go to Thread Groups section.';return;}
+        const mode=executionModes[executionMode];document.getElementById('modeDescription').textContent=mode.description;document.getElementById('modeDescription2').textContent=mode.description;document.getElementById('currentMode').textContent=mode.name;document.getElementById('currentModeDisplay').textContent=mode.name;document.getElementById('modeIndicator').style.display='block';document.getElementById('loopHeader').textContent=executionMode==='duration'?'Loop (∞)':'Loops';document.getElementById('durationControls').style.display=executionMode==='duration'?'block':'none';document.getElementById('sanityConfig').style.display=executionMode==='sanity'?'block':'none';if(executionMode==='duration'){document.getElementById('tab-tps-calculator').classList.remove('tab-disabled');document.getElementById('tpsCalculatorContent').style.display='block';document.getElementById('tpsCalculatorDisabledMessage').style.display='none';document.getElementById('tpsDisabledMessage').textContent='TPS Calculator available for duration-based tests';}else{document.getElementById('tab-tps-calculator').classList.add('tab-disabled');document.getElementById('tpsCalculatorContent').style.display='none';document.getElementById('tpsCalculatorDisabledMessage').style.display='block';document.getElementById('tpsDisabledMessage').textContent=`For ${mode.name}, please go to Thread Groups section to update configuration`;}
+        document.getElementById('modeWarning').classList.add('hidden');if(executionMode==='duration'){initializeDurationFields(totalScaledUsers);}}
+        function changeExecutionMode(){const selectedMode=document.getElementById('executionMode').value;changeExecutionModeInternal(selectedMode);}
+        function changeExecutionModeFromTab(){const selectedMode=document.getElementById('executionMode2').value;changeExecutionModeInternal(selectedMode);}
+        function changeExecutionModeInternal(selectedMode){if(!selectedMode){executionMode=null;document.getElementById('modeDescription').textContent='Please select an execution mode to proceed';document.getElementById('modeDescription2').textContent='Select a mode to see description';document.getElementById('modeIndicator').style.display='none';document.getElementById('currentMode').textContent='Not Selected';document.getElementById('currentModeDisplay').textContent='Not Selected';document.getElementById('modeWarning').classList.remove('hidden');document.getElementById('modeSpecificControls').style.display='none';document.getElementById('durationControls').style.display='none';document.getElementById('sanityConfig').style.display='none';document.getElementById('tab-tps-calculator').classList.add('tab-disabled');document.getElementById('tpsCalculatorContent').style.display='none';document.getElementById('tpsCalculatorDisabledMessage').style.display='block';calculationResults={};updateVariablesTab();showToast('Execution mode cleared','info');return;}
+        executionMode=selectedMode;document.getElementById('executionMode').value=selectedMode;document.getElementById('executionMode2').value=selectedMode;document.getElementById('modeSpecificControls').style.display='block';if(executionMode!=='duration'&&document.getElementById('tab-tps-calculator').classList.contains('tab-active')){switchTab('execution');}
+        renderTable();renderTPSCalculatorTable();updateVariablesTab();showToast(`Switched to ${executionModes[executionMode].name} mode`,'info');}
+        function updateModeDescription(){const selectedMode=document.getElementById('executionMode2').value;if(!selectedMode){document.getElementById('modeDescription2').textContent='Select a mode to see description';}else{document.getElementById('modeDescription2').textContent=executionModes[selectedMode].description;}}
+        function initializeDurationFields(totalScaledUsers){const steadyState=parseInt(globalVariables.steadyState)||0;const hours=Math.floor(steadyState/3600);const minutes=Math.floor((steadyState%3600)/60);const seconds=steadyState%60;document.getElementById('durationHours').value=hours;document.getElementById('durationMinutes').value=minutes;document.getElementById('durationSeconds').value=seconds;document.getElementById('totalDuration').textContent=steadyState+' sec';const rampupSec=parseInt(globalVariables.rampup)||0;const intervalSec=Math.max(1,Math.round(rampupSec/totalScaledUsers));document.getElementById('usersPerInterval').value=1;document.getElementById('intervalSeconds').value=intervalSec;document.getElementById('totalUsersDisplay').textContent=totalScaledUsers;updateEstimatedRampup();}
+        function updateEstimatedRampup(){const usersPerInterval=parseInt(document.getElementById('usersPerInterval').value)||1;const intervalSeconds=parseInt(document.getElementById('intervalSeconds').value)||1;const totalUsers=parseInt(document.getElementById('totalUsersDisplay').textContent)||1;const rampupSeconds=Math.ceil(totalUsers/usersPerInterval)*intervalSeconds;globalVariables.rampup=rampupSeconds.toString();const hrs=Math.floor(rampupSeconds/3600);const mins=Math.floor((rampupSeconds%3600)/60);const secs=rampupSeconds%60;document.getElementById('estimatedRampup').textContent=`${hrs}h ${mins}m ${secs}s`;}
+        function updateDurationFromFields(){if(executionMode!=='duration')return;const hours=parseInt(document.getElementById('durationHours').value)||0;const minutes=parseInt(document.getElementById('durationMinutes').value)||0;const seconds=parseInt(document.getElementById('durationSeconds').value)||0;const totalSeconds=(hours*3600)+(minutes*60)+seconds;globalVariables.steadyState=totalSeconds.toString();document.getElementById('totalDuration').textContent=totalSeconds+' sec';updateVariablesTab();}
+        function updateRampupFromFields(){if(executionMode!=='duration')return;updateEstimatedRampup();updateVariablesTab();}
+        function toggleStatus(index){threadGroupData[index].status=!threadGroupData[index].status;threadGroupData[index].element.setAttribute("enabled",threadGroupData[index].status.toString());renderTable();renderTPSCalculatorTable();showToast(`Thread group "${threadGroupData[index].name}" ${threadGroupData[index].status?'enabled':'disabled'}`,'info');}
+        function updateThreadCount(index,value){threadGroupData[index].threads=parseInt(value,10)||1;threadGroupData[index].originalThreads=threadGroupData[index].threads;renderTable();renderTPSCalculatorTable();}
+        function updateLoopCount(index,value){threadGroupData[index].loops=value;renderTable();}
+        function enableAllThreadGroups(){threadGroupData.forEach(tg=>{tg.status=true;tg.element.setAttribute("enabled","true");});renderTable();renderTPSCalculatorTable();showToast('All thread groups enabled','success');}
+        function disableAllThreadGroups(){threadGroupData.forEach(tg=>{tg.status=false;tg.element.setAttribute("enabled","false");});renderTable();renderTPSCalculatorTable();showToast('All thread groups disabled','warning');}
+        function updateVariablesTab(){if(executionMode==='duration'){document.getElementById('rampupValue').textContent=globalVariables.rampup+' sec';document.getElementById('rampupHours').textContent=secondsToHours(globalVariables.rampup);document.getElementById('steadyStateValue').textContent=globalVariables.steadyState+' sec';document.getElementById('steadyStateHours').textContent=secondsToHours(globalVariables.steadyState);}else{document.getElementById('rampupValue').textContent='N/A (Duration Mode Only)';document.getElementById('rampupHours').textContent='Applicable only in Duration Mode';document.getElementById('steadyStateValue').textContent='N/A (Duration Mode Only)';document.getElementById('steadyStateHours').textContent='Applicable only in Duration Mode';}}
+        function secondsToHours(seconds){if(seconds==="N/A"||seconds==="")return"N/A";const sec=parseFloat(seconds);if(isNaN(sec))return"N/A";return`${(sec/3600).toFixed(2)} hours`;}
+        function updateGlobalVariablesInJMX(){const argumentsList=jmxDocument.getElementsByTagName("Arguments");for(let i=0;i<argumentsList.length;i++){const arg=argumentsList[i];if(arg.getAttribute("testname")==="rampupSteadyDuration"){const elements=arg.getElementsByTagName("elementProp");for(let j=0;j<elements.length;j++){const nameNode=elements[j].getElementsByTagName("stringProp")[0];const valueNode=elements[j].getElementsByTagName("stringProp")[1];if(nameNode&&valueNode){if(nameNode.textContent==="rampup"){valueNode.textContent=globalVariables.rampup;}
+        if(nameNode.textContent==="steadyState"){valueNode.textContent=globalVariables.steadyState;}}}break;}}}
+        function downloadJMX(){if(!jmxDocument){showToast('No JMX loaded','error');return;}
+        try{threadGroupData.forEach(tg=>{let finalThreads=tg.threads;let finalLoops=tg.loops;if(executionMode==='sanity'){finalThreads=1;finalLoops=document.getElementById('sanityIterations')?.value||'5';}else if(executionMode==='duration'){finalLoops='-1';}else if(!executionMode){finalThreads=tg.originalThreads;finalLoops=tg.loops;}
+        tg.element.setAttribute("enabled",tg.status.toString());updateThreadCountInXML(tg.element,finalThreads);updateLoopCountInXML(tg.element,finalLoops);const finalTPS=tg.originalTPS;const tgHashTree=tg.element.nextElementSibling;if(tgHashTree&&tgHashTree.tagName==="hashTree"){setExactThroughputInHashTree(tgHashTree,finalTPS);}});if(executionMode==='duration'){updateGlobalVariablesInJMX();}
+        const serializer=new XMLSerializer();const xmlString=serializer.serializeToString(jmxDocument);const blob=new Blob([xmlString],{type:"application/xml"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="jmx_orchestrator_modified.jmx";document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);addLog('💾 JMX file downloaded');showToast('JMX file downloaded successfully!','success');}catch(error){showToast('Download failed: '+error.message,'error');}}
+        function updateLoopCountInXML(tgElement,loops){const loopController=tgElement.querySelector('elementProp[name="ThreadGroup.main_controller"]');if(loopController){const loopsProps=loopController.getElementsByTagName('stringProp');for(let j=0;j<loopsProps.length;j++){if(loopsProps[j].getAttribute('name')==='LoopController.loops'){loopsProps[j].textContent=loops;return;}}
+        const loopsIntProps=loopController.getElementsByTagName('intProp');for(let j=0;j<loopsIntProps.length;j++){if(loopsIntProps[j].getAttribute('name')==='LoopController.loops'){loopsIntProps[j].textContent=loops;return;}}}}
+        function addLog(message){const logDiv=document.getElementById('calculationLog');const timestamp=new Date().toLocaleTimeString();const entry=document.createElement('div');entry.textContent=`[${timestamp}] ${message}`;entry.style.borderBottom='1px solid #e5e7eb';entry.style.padding='0.25rem 0';entry.style.fontSize='0.75rem';if(logDiv.firstChild&&logDiv.firstChild.classList&&logDiv.firstChild.classList.contains('italic')){logDiv.innerHTML='';}
+        logDiv.insertBefore(entry,logDiv.firstChild);while(logDiv.children.length>50){logDiv.removeChild(logDiv.lastChild);}}
+        function showToast(message,type='info'){const toast=document.getElementById('toast');const toastMessage=document.getElementById('toastMessage');toastMessage.textContent=message;toast.className="fixed bottom-4 right-4 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300";if(type==='success'){toast.className+=' bg-green-600';}else if(type==='error'){toast.className+=' bg-red-600';}else if(type==='warning'){toast.className+=' bg-yellow-600';}else{toast.className+=' bg-black';}
+        toast.style.transform='translateY(0)';toast.style.opacity='1';setTimeout(()=>{toast.style.transform='translateY(5rem)';toast.style.opacity='0';},3000);}
+        function escapeHtml(text){if(!text)return'';const div=document.createElement('div');div.textContent=text;return div.innerHTML;}
     </script>
 </body>
 </html>
