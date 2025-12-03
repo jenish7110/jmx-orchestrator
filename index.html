@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JMX Orchestrator </title>
+    <title>JMX Orchestrator Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -35,9 +35,9 @@
                         <div class="card p-6 md:col-span-2"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-chart-bar mr-2 text-green-500"></i> Performance Summary</h3><div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                             <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Active Groups<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Enabled thread groups / Total thread groups</span></div></div><div class="text-2xl font-bold" id="activeGroups">0</div></div>
                             <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Current Users<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Base number of users (after TPS Calculator adjustments)</span></div></div><div class="text-2xl font-bold" id="originalUsers">0</div></div>
-                            <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Scaled Users (× slaves)<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Current users multiplied by number of slaves</span></div></div><div class="text-2xl font-bold text-green-600" id="scaledUsers">0</div></div>
+                            <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Scaled Users<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Current users multiplied by number of slaves</span></div></div><div class="text-2xl font-bold text-green-600" id="scaledUsers">0</div></div>
                             <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Current TPS<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Base TPS (after TPS Calculator adjustments)</span></div></div><div class="text-2xl font-bold" id="originalTPS">N/A</div></div>
-                            <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Scaled TPS (× slaves)<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Current TPS multiplied by number of slaves</span></div></div><div class="text-2xl font-bold text-green-600" id="scaledTPS">N/A</div></div>
+                            <div class="metric-card"><div class="text-sm text-gray-600 mb-1">Scaled TPS<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Current TPS multiplied by number of slaves</span></div></div><div class="text-2xl font-bold text-green-600" id="scaledTPS">N/A</div></div>
                         </div></div>
                     </div>
                     <div id="mainContent">
@@ -61,7 +61,7 @@
                                 <div class="card p-6 mb-6"><h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center"><i class="fas fa-bullseye mr-2"></i> Bulk TPS Adjustment</h3><p class="text-sm text-gray-600 mb-4">Adjust all thread groups to target total TPS</p><div class="grid md:grid-cols-4 gap-4 mb-6">
                                     <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Target Total TPS<div class="tooltip inline-block ml-1"><i class="fas fa-info-circle text-gray-400 text-xs cursor-help"></i><span class="tooltip-text">Desired total transactions per second for all thread groups</span></div></label><input type="number" id="targetTPS" min="0.01" step="0.01" placeholder="Enter target TPS" class="input-field w-full"><p class="text-xs text-gray-500 mt-1">Desired total transactions per second</p></div>
                                     <div class="flex items-center gap-2"><button onclick="calculateBulkTPS()" class="button-primary w-full mt-2"><i class="fas fa-calculator mr-2"></i> Calculate</button></div>
-                                    <div><button onclick="applyAllCalculations()" class="button-primary w-full mt-2 bg-green-600 hover:bg-green-700" id="applyAllBtn" disabled><i class="fas fa-check mr-2"></i> Apply All</button></div>
+                                    <div><button onclick="applyAllCalculations()" class="button-primary w-full mt-7 bg-green-600 hover:bg-green-700" id="applyAllBtn" disabled><i class="fas fa-check mr-2"></i> Apply All</button></div>
                                 </div>
                                 <div id="calculationResultsTable" class="mb-6" style="display:none">
                                     <div class="flex items-center justify-between mb-4"><h4 class="font-semibold text-gray-900 flex items-center"><i class="fas fa-clipboard-list mr-2"></i> Calculated Changes<span class="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full" id="pendingCount">0</span></h4><div class="text-sm text-gray-600"><span id="appliedCount">0</span> applied / <span id="totalCalculations">0</span> total</div></div>
